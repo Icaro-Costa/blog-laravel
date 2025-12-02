@@ -3,16 +3,22 @@
 @section('content')
     <div class="max-w-2xl mx-auto">
         
-        <a href="{{ route('home') }}" class="inline-flex items-center text-blue-600 hover:text-blue-800 mb-6 transition">
-            &larr; Voltar ao Início
-        </a>
+        <div class="flex items-center gap-6 mb-6 text-sm font-medium">
+            <button onclick="history.back()" class="flex items-center gap-2 text-gray-500 hover:text-blue-600 transition">
+                <span>&larr;</span> Voltar
+            </button>
+            <span class="text-gray-300">|</span>
+            <a href="{{ route('home') }}" class="flex items-center gap-2 text-gray-500 hover:text-blue-600 transition">
+                <span>🏠</span> Ir para o Início
+            </a>
+        </div>
 
         <div class="bg-white rounded-lg shadow-lg overflow-hidden border border-gray-100">
             <div class="h-32 bg-gradient-to-r from-blue-500 to-indigo-600"></div>
             
             <div class="px-8 pb-8">
                 <div class="relative -mt-16 mb-6">
-                    <div class="w-32 h-32 rounded-full border-4 border-white overflow-hidden shadow-md bg-white">
+                    <a href="{{ route('users.posts', $user->id) }}" class="block w-32 h-32 rounded-full border-4 border-white overflow-hidden shadow-md bg-white hover:scale-105 transition-transform duration-200" title="Ver posts de {{ $user->firstName }}">
                         @if($user->image)
                             <img src="{{ $user->image }}" alt="{{ $user->firstName }}" class="w-full h-full object-cover">
                         @else
@@ -20,16 +26,19 @@
                                 {{ substr($user->firstName, 0, 1) }}
                             </div>
                         @endif
-                    </div>
+                    </a>
                 </div>
 
                 <div class="text-center md:text-left mb-8">
-                    <h1 class="text-3xl font-bold text-gray-900">{{ $user->firstName }} {{ $user->lastName }}</h1>
+                    <h1 class="text-3xl font-bold text-gray-900">
+                        <a href="{{ route('users.posts', $user->id) }}" class="hover:text-blue-600 hover:underline transition">
+                            {{ $user->firstName }} {{ $user->lastName }}
+                        </a>
+                    </h1>
                     <p class="text-gray-500">@ {{ $user->username }}</p>
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6 border-t pt-6">
-                    
                     <div>
                         <h3 class="text-sm font-semibold text-gray-400 uppercase tracking-wider mb-3">Contacto</h3>
                         <ul class="space-y-3 text-gray-700">
@@ -43,7 +52,6 @@
                             </li>
                         </ul>
                     </div>
-
                     <div>
                         <h3 class="text-sm font-semibold text-gray-400 uppercase tracking-wider mb-3">Dados Pessoais</h3>
                         <ul class="space-y-3 text-gray-700">

@@ -34,23 +34,42 @@
                     </p>
 
                     <div class="mt-auto border-t pt-4 flex items-center justify-between text-sm text-gray-500">
-                        <div class="flex items-center gap-2">
-                             <div class="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center overflow-hidden">
+                        
+                        <a href="{{ route('users.posts', $post->author->id) }}" class="flex items-center gap-2 group hover:bg-gray-50 p-1 -ml-1 rounded transition" title="Ver posts de {{ $post->author->firstName }}">
+                             <div class="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center overflow-hidden border border-transparent group-hover:border-blue-400 group-hover:scale-105 transition">
                                 @if($post->author && $post->author->image)
                                     <img src="{{ $post->author->image }}" alt="User" class="w-full h-full object-cover">
                                 @else
                                     <span>{{ substr($post->author->firstName ?? 'U', 0, 1) }}</span>
                                 @endif
                              </div>
-                             <span class="font-medium truncate max-w-[100px]">{{ $post->author->firstName ?? 'Anônimo' }}</span>
-                        </div>
-                        <div class="flex items-center gap-3">
-                            <span class="flex items-center gap-1 text-green-600">
-                                👍 {{ $post->reactions_likes }}
-                            </span>
-                            <span class="flex items-center gap-1 text-blue-600">
-                                💬 {{ $post->comments->count() }}
-                            </span>
+                             <span class="font-medium truncate max-w-[100px] group-hover:text-blue-600 transition">{{ $post->author->firstName ?? 'Anônimo' }}</span>
+                        </a>
+
+                        <div class="flex items-center gap-4">
+                            
+                            <form action="{{ route('posts.like', $post->id) }}" method="POST" class="inline like-form">
+                                @csrf
+                                @php $userHasLiked = in_array($post->id, session('liked_posts', [])); @endphp
+                                <button type="submit" class="flex items-center gap-1 transition {{ $userHasLiked ? 'text-green-600 font-bold' : 'text-gray-500 hover:text-green-600' }}" title="Curtir">
+                                    <span class="text-lg">👍</span> 
+                                    <span class="count-display">{{ $post->reactions_likes }}</span>
+                                </button>
+                            </form>
+
+                            <form action="{{ route('posts.dislike', $post->id) }}" method="POST" class="inline dislike-form">
+                                @csrf
+                                @php $userHasDisliked = in_array($post->id, session('disliked_posts', [])); @endphp
+                                <button type="submit" class="flex items-center gap-1 transition {{ $userHasDisliked ? 'text-red-500 font-bold' : 'text-gray-500 hover:text-red-500' }}" title="Não curtir">
+                                    <span class="text-lg">👎</span> 
+                                    <span class="count-display">{{ $post->reactions_dislikes }}</span>
+                                </button>
+                            </form>
+
+                            <a href="{{ route('posts.show', $post->id) }}#comments-section" class="flex items-center gap-1 text-gray-500 hover:text-blue-600 transition ml-1 group" title="Ver comentários">
+                                <span class="text-lg group-hover:scale-110 transition-transform">💬</span> 
+                                {{ $post->comments->count() }}
+                            </a>
                         </div>
                     </div>
                 </div>
