@@ -103,4 +103,61 @@ A arquitetura do projeto foi estruturada para máxima manutenibilidade e aderên
 - [x] **Filtros Avançados (Query Scopes)** (Implementados por Título, Tag, Likes e Views)
 - [x] **CRUD de Comentários**
 - [x] **Soft Delete em Comentários** (Implementado via Migração)
+```mermaid
+erDiagram
+    %% Tabela de Utilizadores
+    USERS {
+        bigint id PK
+        string firstName
+        string lastName
+        string email UK "Unique"
+        string phone
+        string username UK "Unique"
+        string password
+        string image "Nullable"
+        date birthDate "Nullable"
+        string address_address "Nullable"
+        string address_city "Nullable"
+        string address_state "Nullable"
+        string address_postalCode "Nullable"
+        timestamp created_at
+        timestamp updated_at
+    }
 
+    %% Tabela de Posts
+    POSTS {
+        bigint id PK
+        bigint userId FK
+        string title
+        text body
+        json tags "Nullable"
+        integer reactions_likes "Default 0"
+        integer reactions_dislikes "Default 0"
+        integer views "Default 0"
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    %% Tabela de Comentários
+    COMMENTS {
+        bigint id PK
+        bigint postId FK
+        bigint userId FK
+        text body
+        integer likes "Default 0"
+        integer dislikes "Default 0"
+        timestamp deleted_at "SoftDelete Nullable"
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    %% Relações
+    %% Um utilizador escreve muitos posts (1:N)
+    USERS ||--o{ POSTS : "escreve (author)"
+    
+    %% Um post tem muitos comentários (1:N)
+    POSTS ||--o{ COMMENTS : "tem"
+    
+    %% Um utilizador escreve muitos comentários (1:N)
+    USERS ||--o{ COMMENTS : "comenta"
+```
